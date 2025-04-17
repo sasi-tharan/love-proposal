@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Love Proposal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url("bg.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+        }
+
+        .wave-text span {
+            display: inline-block;
+            font-size: 4rem;
+            color: white;
+            animation: wave 2s ease-in-out infinite;
+        }
+
+        .wave-text span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .wave-text span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .wave-text span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .wave-text span:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .wave-text span:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        .wave-text span:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
+        .wave-text span:nth-child(7) {
+            animation-delay: 0.6s;
+        }
+
+        .wave-text span:nth-child(8) {
+            animation-delay: 0.7s;
+        }
+
+        .wave-text span:nth-child(9) {
+            animation-delay: 0.8s;
+        }
+
+        .wave-text span:nth-child(10) {
+            animation-delay: 0.9s;
+        }
+
+        .wave-text span:nth-child(11) {
+            animation-delay: 1s;
+        }
+
+        .dropdown-container,
+        .question-container {
+            display: none;
+        }
+
+        .dropdown-container select {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wave-container" id="waveContainer">
+        <h1 class="wave-text">
+            <span>H</span><span>i</span><br>
+            <span>A</span><span>N</span><span>U</span><span>P</span><span>R</span><span>I</span><span>Y</span><span>A</span><span>😊</span>
+        </h1>
+    </div>
+
+    <div class="dropdown-container" id="dropdownContainer">
+        <label for="love-response" style="color:white; font-size: 1.5rem;">Choose a Language</label><br><br>
+        <select id="love-response">
+            <option value="">Choose your answer</option>
+            <option value="tamil">Tamil</option>
+            <option value="english">English</option>
+            <option value="sinhala">Sinhala</option>
+            <option value="hindi">Hindi</option>
+            <option value="malayalam">Malayalam</option>
+            <option value="telugu">Telugu</option>
+            <option value="spanish">Spanish</option>
+            <option value="french">French</option>
+        </select>
+    </div>
+
+    <div class="question-container" id="questionContainer">
+        <p id="questionText" style="color:white; font-size: 2rem;"></p>
+        <span class="btn" id="yesBtn" style="font-size: 3rem; color: white; cursor: pointer;">❤️</span>
+        <span class="btn" id="noBtn" style="font-size: 3rem; color: white; cursor: pointer;">💔</span>
+    </div>
+
+    <audio id="loveMusic" preload="auto"></audio>
+
+    <script>
+        const questions = {
+            tamil: "உங்களுக்கு என்ன புடிக்குமா?",
+            english: "Do you like me?",
+            sinhala: "ඔබට මම කැමතිද?",
+            hindi: "क्या तुम्हें मैं पसंद हूँ?",
+            malayalam: "നിനക്ക് എനിക്ക് ഇഷ്ടമാണോ?",
+            telugu: "నీకు నేను ఇష్టమా?",
+            spanish: "¿Te gusto?",
+            french: "Est-ce que je te plais ?"
+        };
+
+        const followUpQuestion = {
+            tamil: "நான் உன்னை விரும்புகிறேன்",
+            english: "I love you",
+            sinhala: "මම ඔයාට ආදරෙයි",          // I love you
+            hindi: "मैं तुमसे प्यार करता हूँ",      // I love you
+            malayalam: "ഞാൻ നിന്നെ സ്നേഹിക്കുന്നു",  // I love you
+            telugu: "నేను నిన్ను ప్రేమిస్తున్నాను",  // I love you
+            spanish: "Te amo",                    // I love you
+            french: "Je t'aime"                   // I love you
+        };
+
+
+        let isFollowUp = false;
+
+        setTimeout(() => {
+            document.getElementById("waveContainer").style.display = "none";
+            document.getElementById("dropdownContainer").style.display = "block";
+        }, 3000);
+
+        document.getElementById("love-response").addEventListener("change", function () {
+            const selectedLang = this.value;
+            const dropdownContainer = document.getElementById("dropdownContainer");
+            const questionContainer = document.getElementById("questionContainer");
+            const questionText = document.getElementById("questionText");
+
+            if (selectedLang && questions[selectedLang]) {
+                dropdownContainer.style.display = "none";
+                typeWriterEffect(questionText, questions[selectedLang]);
+                questionContainer.style.display = "block";
+            }
+        });
+
+        document.getElementById("yesBtn").addEventListener("click", () => {
+            const music = document.getElementById("loveMusic");
+            const selectedLang = document.getElementById("love-response").value;
+            const questionText = document.getElementById("questionText");
+            const questionContainer = document.getElementById("questionContainer");
+
+            if (!isFollowUp) {
+                music.src = "tamil.mp3"; // Initial yes music
+                music.loop = true;
+                music.play().catch((err) => console.log("Autoplay blocked:", err));
+                questionContainer.style.display = "none";
+
+                setTimeout(() => {
+                    isFollowUp = true;
+                    typeWriterEffect(questionText, followUpQuestion[selectedLang]);
+                    questionContainer.style.display = "block";
+                }, 2000);
+            } else {
+                music.src = "happy_3.mp3"; // Final happy music
+                music.loop = true;
+                music.play().catch((err) => console.log("Autoplay blocked:", err));
+                questionContainer.style.display = "none";
+
+                // Add proposing image
+                const img = document.createElement('img');
+                img.src = "love.png"; // 💡 Replace with your image file
+                img.alt = "Proposing";
+                img.style.position = "absolute";
+                img.style.bottom = "250px"; // Adjusted to move it up
+                img.style.left = "50%";
+                img.style.transform = "translateX(-50%)";
+                img.style.height = "300px";
+                img.style.zIndex = "1000";
+                document.body.appendChild(img);
+
+                // Add signature below the image
+                const signature = document.createElement('div');
+                signature.textContent = "— Yours Crushfully ❤️ Sasitharan";
+                signature.style.position = "absolute";
+                signature.style.bottom = "125px";
+                signature.style.left = "50%";
+                signature.style.transform = "translateX(-50%)";
+                signature.style.color = "white";
+                signature.style.fontFamily = "'Great Vibes', cursive";
+                signature.style.fontSize = "1.5rem";
+                signature.style.fontStyle = "italic";
+                signature.style.zIndex = "1001";
+                document.body.appendChild(signature);
+
+                setTimeout(() => {
+                    const followUpMessage = document.createElement('div');
+                    followUpMessage.style.color = "white";
+                    followUpMessage.style.fontSize = "2rem";
+                    followUpMessage.style.position = "absolute";
+                    followUpMessage.style.top = "10%";
+                    followUpMessage.style.left = "50%";
+                    followUpMessage.style.transform = "translateX(-50%)";
+                    followUpMessage.style.textAlign = "center";
+                    followUpMessage.textContent = "Forever yours ❤️";
+                    document.body.appendChild(followUpMessage);
+                }, 2000);
+            }
+        });
+
+        document.getElementById("noBtn").addEventListener("click", () => {
+            const music = document.getElementById("loveMusic");
+            music.src = "sad_2.mp3"; // Sad music
+            music.loop = true;
+            music.play().catch((err) => console.log("Autoplay blocked:", err));
+            document.getElementById("questionContainer").style.display = "none";
+
+            setTimeout(() => {
+                const messageContainer = document.createElement('div');
+                messageContainer.style.color = "white";
+                messageContainer.style.fontSize = "2rem";
+                messageContainer.textContent = "I’ll wait forever to be loved by you ❤️";
+                document.body.appendChild(messageContainer);
+            }, 2000);
+        });
+
+        function typeWriterEffect(element, text, speed = 100, callback = null) {
+    element.textContent = "";
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        } else if (callback) {
+            callback();
+        }
+    }
+    type();
+}
+
+
+    </script>
+</body>
+
+</html>
